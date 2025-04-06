@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <form id="add-tour-form">
+        <input type="text" id="tour-name" placeholder="Tour Name" required />
+        <textarea id="tour-description" placeholder="Tour Description" required></textarea>
+        <input type="number" id="tour-price" placeholder="Tour Price" required />
+        <input type="url" id="tour-image-url" placeholder="Tour Image URL" required />
+        <button type="submit">Add Tour</button>
+    </form>
+    <p id="admin-feedback"></p>
+    <button id="inspect-changes-button">Inspect Changes</button>
+    <button id="back-button">Back</button>
+    <script src="admin.js" type="module"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const backButton = document.getElementById("back-button");
+          const inspectChangesButton = document.getElementById("inspect-changes-button");
+      
+          console.log("Back button:", backButton);
+          console.log("Inspect button:", inspectChangesButton);
+      
+          if (backButton) {
+            backButton.addEventListener("click", () => {
+              window.location.href = "index.html";
+            });
+          }
+      
+          if (inspectChangesButton) {
+            inspectChangesButton.addEventListener("click", async () => {
+              try {
+                const response = await fetch("http://localhost:3000/api/admin-changes");
+                const changes = await response.json();
+      
+                if (changes.length === 0) {
+                  alert('No changes made yet.');
+                } else {
+                  const list = changes.map(change => `${change.timestamp}: ${change.change}`).join('\n');
+                  alert(`Admin Changes:\n${list}`);
+                }
+              } catch (err) {
+                console.error('Error fetching admin changes:', err);
+                alert('Failed to fetch changes.');
+              }
+            });
+          }
+        });
+      </script>      
+</body>
+</html>
